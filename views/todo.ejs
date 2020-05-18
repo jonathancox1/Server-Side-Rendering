@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title%></title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+
+<body>
+    <% data.forEach(element => { %>
+
+    <li class="todo-item js-todo-item" data-id="<%= element.id %>">
+        <form class="todo-form" onsubmit="">
+            <input type="text" class="" value="<%= element.todo %>" />
+            <button class="todo-button save" type="submit">Save</button>
+        </form>
+        <button class="todo-button delete" type="button" onclick="">X</button>
+    </li>
+
+    <% }); %>
+
+
+</body>
+
+</html>

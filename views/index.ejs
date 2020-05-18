@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/head.ejs') %>
+</head>
+
+<body>
+    <div class="container vh-100">
+        <div class="col text-center">
+
+
+            <h1><%= title %> </h1>
+            <p>Your To Do List</p>
+            <div class="card">
+                <div class="card-body border mx-auto">
+                    <!-- forEach inline ejs -->
+                    <% todoData.forEach(todo => { %>
+                    <div class="input-group">
+                        <form action="/api/todos/<%= todo.id %>?form=true&_method=PUT" method="POST"
+                            class="form-inline">
+                            <input type="text" class="form-control my-2" id="todo-<%= todo.id %>" name="todo"
+                                value="<%= todo.todo %>" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-info" type="submit">Update</button>
+                        </form>
+                        <form action="/api/todos/<%= todo.id %>?form=true&_method=DELETE" method="POST"
+                            class="form-inline">
+                            <button class="btn btn-outline-danger" type="submit">X</button>
+                        </form>
+                    </div>
+                    <% }) %>
+                </div>
+                <!-- action is where it goes to method is HTTP verb -->
+                <div class="input-group mt-3">
+                    <form action="/api/todos?form=true" method="POST" class="form-inline">
+                        <input type="text" id="todo" name="todo" placeholder="Add new ToDo Item"
+                            aria-describedby="basic-addon2" class="form-control">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-block btn-outline-primary">Add</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+    </div>
+
+    </div>
+    </div>
+
+
+
+
+
+    <%- include('partials/pageend.ejs') %>
+</body>
+
+</html>

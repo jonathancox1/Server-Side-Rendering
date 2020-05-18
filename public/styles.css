@@ -1,0 +1,19 @@
+body {
+    background: #151515;
+    color: #fff;
+    font-family: sans-serif;
+}
+
+.container {
+    max-width: 95%;
+    margin: 30px auto;
+    width: 600px;
+}
+
+.card {
+    background-color: #23293d;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px 0 #000;
+    justify-content: center;
+}
