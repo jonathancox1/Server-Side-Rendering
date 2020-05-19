@@ -15,55 +15,58 @@ app.set('views', 'views');
 app.use(express.static('./public'));
 
 
-const data = [
-    {
+let data = [
+    [{
         id: 1,
-        text: 'Hot Garbage'
+        todo: 'Hot Garbage'
     },
     {
         id: 2,
-        text: "Filet of Fish"
+        todo: "Filet of Fish"
     },
     {
         id: 3,
-        text: "Mc Rib"
+        todo: "Mc Rib"
     },
     {
         id: 4,
-        text: "Seafood Fritos"
-    }
-]
-
-let todoList = [
-    {
+        todo: "Seafood Fritos"
+    }],
+    [{
         id: 1,
-        todo: 'Implement a REST API',
+        todo: 'Create a RESTful API'
     },
     {
         id: 2,
-        todo: 'Second ToDo Item'
+        todo: 'Drink a Coffee'
     },
     {
         id: 3,
         todo: 'Wash the Dog'
     },
-];
+    ]
+]
+
 
 // GET /api/todos
 // gets all
-app.get('/api/todos', (req, res) => {
+app.get('/api/todos/:index', (req, res) => {
     console.log('get')
-    res.json(todoList);
+    let index = Number.parseFloat(req.params.index);
+    console.log(index);
+    res.json(data[index]);
 })
 
 
 // GET /api/todos/:id
-app.get('/api/todos/:id', (req, res) => {
+app.get('/api/todos/:index/:id', (req, res) => {
+    let index = Number.parseFloat(req.params.index);
+    console.log(index);
     // convert id to a number
     let id = Number.parseFloat(req.params.id);
     console.log(id);
     // filter checks if the params.id is in the todoList
-    let itemToCall = todoList.filter(list => list.id === id);
+    let itemToCall = data[index].filter(list => list.id === id);
     // handle error if .filter() returns false
     if (itemToCall == false) {
         // if the length of keys is 0 status = 404
@@ -75,10 +78,12 @@ app.get('/api/todos/:id', (req, res) => {
 })
 
 // POST /api/todos
-app.post('/api/todos', (req, res) => {
+app.post('/api/todos/:index/', (req, res) => {
+    let index = Number.parseFloat(req.params.index);
+    console.log(index);
     // if there is a body
     if (req.body.todo) {
-        const prevId = todoList.reduce((prev, curr) => {
+        const prevId = data[index].reduce((prev, curr) => {
             // determines the previous id number
             // with a reduce function
             if (prev < curr.id) {
@@ -92,14 +97,21 @@ app.post('/api/todos', (req, res) => {
             todo: req.body.todo,
         }
         // push newTodo into the todo list
-        todoList.push(newTodo);
+        data[index].push(newTodo);
         // respond with the newTodo
         console.log(newTodo);
         if (req.query.form) {
-            res.redirect('/index');
+            let route;
+            if (index == 1) {
+                route = '/list1'
+            } else {
+                route = '/list2'
+            }
+            res.redirect(route);
         } else {
             res.json(newTodo);
         }
+
 
     } else {
         res.status(400).json({
@@ -112,20 +124,28 @@ app.post('/api/todos', (req, res) => {
 // used to update existing items
 // if no id, respond 404
 // PUT /api/todos/:id
-app.put('/api/todos/:id', (req, res) => {
+app.put('/api/todos/:index/:id', (req, res) => {
+    let index = Number.parseFloat(req.params.index);
+    console.log(index);
     let id = Number.parseFloat(req.params.id);
     console.log(id);
     // filter checks if the params.id is in the todoList
-    let itemToCall = todoList.find(item => item.id == id);
-    console.log(itemToCall)
+    let itemToCall = data[index].find(item => item.id == id);
     // handle error if .find() returns number or undefined
     if (itemToCall != undefined) {
         itemToCall.todo = req.body.todo;
         if (req.query.form) {
-            res.redirect('/index');
+            let route;
+            if (index == 1) {
+                route = '/list1'
+            } else {
+                route = '/list2'
+            }
+            res.redirect(route);
         } else {
             res.json(itemToCall);
         }
+
     } else {
         // if the length of keys is 0 status = 404
         console.log(`error locating id: ${id}, status: 404`);
@@ -136,9 +156,10 @@ app.put('/api/todos/:id', (req, res) => {
 })
 
 // DELETE /api/todos/:id
-app.delete('/api/todos/:id', (req, res) => {
+app.delete('/api/todos/:index/:id', (req, res) => {
     let id = Number.parseFloat(req.params.id);
-    let itemToCall = todoList.find(item => item.id == id);
+    let index = Number.parseFloat(req.params.index);
+    let itemToCall = data[index].find(item => item.id == id);
 
     if (itemToCall == undefined) {
         console.log(`error locating id: ${id}, status: 404`);
@@ -147,32 +168,49 @@ app.delete('/api/todos/:id', (req, res) => {
         })
     } else {
         // reassigns the todoList to everything that isnt the req.body.id
-        todoList = todoList.filter(list => list.id != id);
+        data[index] = data[index].filter(list => list.id != id);
         console.log(`ID : ${id} ${itemToCall} has been deleted`)
+        console.log(data[index]);
         if (req.query.form) {
-            res.redirect('/index');
+            let route;
+            if (index == 1) {
+                route = '/list1'
+            } else {
+                route = '/list2'
+            }
+            res.redirect(route);
         } else {
             res.json(todoList);
         }
     }
 })
 
+// List1 Route
+app.get('/list1', function (req, res) {
+    res.render('list1', {
+        title: 'To-Do List',
+        todoData: data[1],
+        index: 1,
+    })
+})
 
-// INDEX Route
-// responds with the template 'about' and passes in the data Obj {}
+// Pass in html to res.render
+const bodyData = `<h3>Choose Your List</h3>`
+// Index Route
 app.get('/index', function (req, res) {
     res.render('index', {
-        title: 'To-Do`s',
-        todoData: todoList,
+        title: 'Server Side Rendering',
+        body: bodyData,
     })
 })
 
 
-// TODO Route
-app.get('/todo', function (req, res) {
-    res.render('todo', {
-        title: 'Todo List',
-        data: todoList,
+// List2 Route
+app.get('/list2', function (req, res) {
+    res.render('list1', {
+        title: "Items I'd never want to eat",
+        todoData: data[0],
+        index: 0,
     })
 })
 

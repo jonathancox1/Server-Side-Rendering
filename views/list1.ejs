@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/head.ejs') %>
+</head>
+
+<body>
+    <div class="row text-center mx-5">
+        <div class="col justify-content-center">
+            <%- include('partials/nav.ejs') %>
+        </div>
+    </div>
+
+    <div class="container row vh-100">
+        <div class="col text-center mt-5">
+            <h3><%= title %></h3>
+            <div class="card">
+                <div class="card-body">
+                    <!-- forEach inline ejs -->
+                    <% todoData.forEach(todo => { %>
+                    <div class="my-2">
+                        <div class="input-group justify-content-center">
+                            <form action="/api/todos/<%= index %>/<%= todo.id %>?form=true&_method=PUT" method="POST"
+                                class="form-inline">
+                                <input type="text" class="form-control " id="todo-<%= todo.id %>" name="todo"
+                                    value="<%= todo.todo %>" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-info" type="submit">Update</button>
+                            </form>
+                            <form action="/api/todos/<%= index %>/<%= todo.id %>?form=true&_method=DELETE" method="POST"
+                                class="form-inline">
+                                <button class="btn btn-outline-danger" type="submit">X</button>
+                            </form>
+                        </div>
+                    </div>
+                    <% }) %>
+
+                    <!-- action is where it goes to method is HTTP verb -->
+                    <div class="row input-group my-3 mx-auto justify-content-center">
+                        <form action="/api/todos/<%= index %>/?form=true" method="POST" class="form-inline">
+                            <input type="text" id="todo" name="todo" placeholder="Add Item"
+                                aria-describedby="basic-addon2" class="form-control">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-block btn-outline-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+    </div>
+
+    </div>
+    </div>
+
+
+
+
+
+    <%- include('partials/pageend.ejs') %>
+</body>
+
+</html>
